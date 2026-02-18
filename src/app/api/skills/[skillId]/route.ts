@@ -4,19 +4,19 @@ import { authOptions } from "@/lib/auth/authOptions";
 import { prisma } from "@/lib/db/prisma";
 import { skillCreateSchema } from "@/lib/validators/skill";
 
-type Ctx = { params: { skillId: string } };
+type Ctx = { params: Promise<{ skillId: string }> };
 
 // Updates a skill (partial updates allowed)
-export async function PATCH(req: Request, { params }: Ctx) {
+export async function PATCH(req: Request, ctx: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { skillId } = await ctx.params; // ✅ unwrap params Promise once
   const userId = (session.user as any).id as string;
-  const body = await req.json();
 
-  // Allows partial updates
+  const body = await req.json();
   const parsed = skillCreateSchema.partial().safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
@@ -25,9 +25,9 @@ export async function PATCH(req: Request, { params }: Ctx) {
     );
   }
 
-  // Ensures the skill belongs to this user
+  // Ensure it belongs to the user
   const existing = await prisma.skill.findFirst({
-    where: { id: params.skillId, userId, isArchived: false },
+    where: { id: skillId, userId, isArchived: false },
     select: { id: true },
   });
 
@@ -36,7 +36,7 @@ export async function PATCH(req: Request, { params }: Ctx) {
   }
 
   const updated = await prisma.skill.update({
-    where: { id: params.skillId },
+    where: { id: skillId },
     data: parsed.data,
   });
 
@@ -44,16 +44,17 @@ export async function PATCH(req: Request, { params }: Ctx) {
 }
 
 // Soft-deletes (archives) a skill
-export async function DELETE(_: Request, { params }: Ctx) {
+export async function DELETE(_: Request, ctx: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { skillId } = await ctx.params;
   const userId = (session.user as any).id as string;
 
   const existing = await prisma.skill.findFirst({
-    where: { id: params.skillId, userId, isArchived: false },
+    where: { id: skillId, userId, isArchived: false },
     select: { id: true },
   });
 
@@ -62,7 +63,7 @@ export async function DELETE(_: Request, { params }: Ctx) {
   }
 
   await prisma.skill.update({
-    where: { id: params.skillId },
+    where: { id: skillId },
     data: { isArchived: true },
   });
 

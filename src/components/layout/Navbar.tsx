@@ -24,7 +24,7 @@ export default function Navbar() {
   const { data, status } = useSession();
 
   return (
-    <header className="border-b bg-white">
+    <header className="sticky top-0 z-50 border-b bg-gray-50backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
         <Link href="/" className="font-semibold">
           SkillTrack

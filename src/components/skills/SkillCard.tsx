@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import type { Skill } from "@/lib/api/skills";
@@ -17,7 +18,13 @@ export default function SkillCard({ skill }: { skill: Skill }) {
 
   const onDelete = useCallback(() => {
     if (del.isPending) return;
-    if (confirm(`Archive "${skill.title}"?`)) del.mutate();
+    if (
+      confirm(
+        `Archive "${skill.title}"?\n\nThis will hide it from your active skills.`
+      )
+)
+  del.mutate();
+
   }, [del, skill.title]);
 
   return (
@@ -36,7 +43,21 @@ export default function SkillCard({ skill }: { skill: Skill }) {
         </div>
       </div>
 
-      <div className="mt-3 flex justify-end">
+      <div className="mt-3 flex justify-end gap-3">
+        <Link
+          className="text-sm hover:underline"
+          href={`/skills/${skill.id}/resources`}
+        >
+          Resources
+        </Link>
+
+        <Link
+          className="text-sm hover:underline"
+          href={`/skills/${skill.id}/edit`}
+        >
+          Edit
+        </Link>
+
         <button
           onClick={onDelete}
           className="text-sm text-red-600 hover:underline disabled:opacity-50"
