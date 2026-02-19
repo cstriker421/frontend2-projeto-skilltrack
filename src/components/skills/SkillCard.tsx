@@ -4,28 +4,48 @@ import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import type { Skill } from "@/lib/api/skills";
-import { deleteSkill } from "@/lib/api/skills";
+import { deleteSkill, purgeSkill, restoreSkill } from "@/lib/api/skills";
 
-export default function SkillCard({ skill }: { skill: Skill }) {
+export default function SkillCard({
+  skill,
+  archived,
+}: {
+  skill: Skill;
+  archived: boolean;
+}) {
   const qc = useQueryClient();
 
-  const del = useMutation({
+  const archiveMut = useMutation({
     mutationFn: async () => deleteSkill(skill.id),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["skills"] });
     },
   });
 
-  const onDelete = useCallback(() => {
-    if (del.isPending) return;
+  const restoreMut = useMutation({
+    mutationFn: async () => restoreSkill(skill.id),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["skills"] });
+    },
+  });
+
+  const purgeMut = useMutation({
+    mutationFn: async () => purgeSkill(skill.id),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["skills"] });
+    },
+  });
+
+  const onArchive = useCallback(() => {
+    if (archiveMut.isPending) return;
     if (
       confirm(
         `Archive "${skill.title}"?\n\nThis will hide it from your active skills.`
       )
-)
-  del.mutate();
-
-  }, [del, skill.title]);
+    ) {
+      archiveMut.mutate();
+    }
+  }, [archiveMut, skill.title]);
 
   return (
     <li className="rounded-md border p-3">
@@ -44,27 +64,57 @@ export default function SkillCard({ skill }: { skill: Skill }) {
       </div>
 
       <div className="mt-3 flex justify-end gap-3">
-        <Link
-          className="text-sm hover:underline"
-          href={`/skills/${skill.id}/resources`}
-        >
-          Resources
-        </Link>
+        {archived ? (
+          <>
+            <button
+              onClick={() => restoreMut.mutate()}
+              className="text-sm hover:underline disabled:opacity-50"
+              disabled={restoreMut.isPending}
+            >
+              {restoreMut.isPending ? "Restoring…" : "Restore"}
+            </button>
 
-        <Link
-          className="text-sm hover:underline"
-          href={`/skills/${skill.id}/edit`}
-        >
-          Edit
-        </Link>
+            <button
+              onClick={() => {
+                if (
+                  confirm(
+                    `Permanently delete "${skill.title}"?\n\nThis cannot be undone.`
+                  )
+                ) {
+                  purgeMut.mutate();
+                }
+              }}
+              className="text-sm text-red-600 hover:underline disabled:opacity-50"
+              disabled={purgeMut.isPending}
+            >
+              {purgeMut.isPending ? "Deleting…" : "Delete permanently"}
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              className="text-sm hover:underline"
+              href={`/skills/${skill.id}/resources`}
+            >
+              Resources
+            </Link>
 
-        <button
-          onClick={onDelete}
-          className="text-sm text-red-600 hover:underline disabled:opacity-50"
-          disabled={del.isPending}
-        >
-          {del.isPending ? "Archiving…" : "Archive"}
-        </button>
+            <Link
+              className="text-sm hover:underline"
+              href={`/skills/${skill.id}/edit`}
+            >
+              Edit
+            </Link>
+
+            <button
+              onClick={onArchive}
+              className="text-sm text-red-600 hover:underline disabled:opacity-50"
+              disabled={archiveMut.isPending}
+            >
+              {archiveMut.isPending ? "Archiving…" : "Archive"}
+            </button>
+          </>
+        )}
       </div>
     </li>
   );

@@ -4,14 +4,16 @@ import { authOptions } from "@/lib/auth/authOptions";
 import { prisma } from "@/lib/db/prisma";
 import { skillCreateSchema } from "@/lib/validators/skill";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const archived = searchParams.get("archived") === "1";
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const userId = (session.user as any).id as string;
 
   const skills = await prisma.skill.findMany({
-    where: { userId, isArchived: false },
+    where: { userId, isArchived: archived },
     orderBy: { updatedAt: "desc" },
   });
 

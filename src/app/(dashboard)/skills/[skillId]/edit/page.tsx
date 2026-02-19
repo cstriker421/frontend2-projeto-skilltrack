@@ -4,19 +4,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Skill } from "@/lib/api/skills";
-import { fetchSkills, updateSkill } from "@/lib/api/skills";
+import { fetchSkill, updateSkill } from "@/lib/api/skills";
 
 export default function EditSkillPage() {
   const { skillId } = useParams<{ skillId: string }>();
   const router = useRouter();
   const qc = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["skills"],
-    queryFn: fetchSkills,
+  const { data: skill, isLoading, isError } = useQuery({
+    queryKey: ["skill", skillId],
+    queryFn: () => fetchSkill(skillId),
   });
-
-  const skill = data?.find((s) => s.id === skillId);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -40,12 +38,15 @@ export default function EditSkillPage() {
         progress,
       }),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["skills"] });
+      // refresh lists + this skill
+      await qc.invalidateQueries({ queryKey: ["skills"] }); // ok to be broad
+      await qc.invalidateQueries({ queryKey: ["skill", skillId] });
       router.push("/skills");
     },
   });
 
   if (isLoading) return <p className="p-4">Loading…</p>;
+  if (isError) return <p className="p-4 text-red-600">Failed to load skill.</p>;
   if (!skill) return <p className="p-4">Skill not found.</p>;
 
   return (
@@ -98,12 +99,22 @@ export default function EditSkillPage() {
           <p className="text-sm text-red-600">Failed to update skill.</p>
         ) : null}
 
-        <button
-          className="rounded-md bg-black px-4 py-2 text-white disabled:opacity-50"
-          disabled={mutation.isPending}
-        >
-          {mutation.isPending ? "Saving…" : "Save changes"}
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            className="rounded-md border px-4 py-2 text-sm"
+            onClick={() => router.push("/skills")}
+          >
+            Cancel
+          </button>
+
+          <button
+            className="rounded-md bg-black px-4 py-2 text-white disabled:opacity-50"
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? "Saving…" : "Save changes"}
+          </button>
+        </div>
       </form>
     </div>
   );
