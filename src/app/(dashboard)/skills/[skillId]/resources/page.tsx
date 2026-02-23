@@ -17,7 +17,8 @@ export default function SkillResourcesPage() {
 
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
-  const [kind, setKind] = useState<Resource["kind"]>("ARTICLE");
+  const [status, setStatus] = useState<Resource["status"]>("PLANNED");
+  const [type, setType] = useState<Resource["type"]>("ARTICLE");
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["resources", skillId],
@@ -29,18 +30,22 @@ export default function SkillResourcesPage() {
     mutationFn: async () =>
       createResource(skillId, {
         title,
-        url,
-        kind,
+        url: url || undefined,
+        status,
+        type,
       }),
     onSuccess: async () => {
       setTitle("");
       setUrl("");
+      setStatus("PLANNED");
+      setType("ARTICLE");
       await qc.invalidateQueries({ queryKey: ["resources", skillId] });
     },
   });
 
   const delMut = useMutation({
-    mutationFn: async (resourceId: string) => deleteResource(skillId, resourceId),
+    mutationFn: async (resourceId: string) =>
+      deleteResource(skillId, resourceId),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["resources", skillId] });
     },
@@ -56,7 +61,7 @@ export default function SkillResourcesPage() {
       </div>
 
       <form
-        className="rounded-md border p-3 space-y-3"
+        className="space-y-3 rounded-md border p-3"
         onSubmit={(e) => {
           e.preventDefault();
           createMut.mutate();
@@ -81,14 +86,24 @@ export default function SkillResourcesPage() {
         <div className="flex flex-wrap gap-2">
           <select
             className="rounded-md border p-2"
-            value={kind}
-            onChange={(e) => setKind(e.target.value as Resource["kind"])}
+            value={type}
+            onChange={(e) => setType(e.target.value as Resource["type"])}
           >
             <option value="ARTICLE">Article</option>
             <option value="VIDEO">Video</option>
             <option value="COURSE">Course</option>
             <option value="BOOK">Book</option>
-            <option value="OTHER">Other</option>
+            <option value="CERTIFICATION">Certification</option>
+          </select>
+
+          <select
+            className="rounded-md border p-2"
+            value={status}
+            onChange={(e) => setStatus(e.target.value as Resource["status"])}
+          >
+            <option value="PLANNED">Planned</option>
+            <option value="IN_PROGRESS">In progress</option>
+            <option value="COMPLETED">Completed</option>
           </select>
 
           <button
@@ -113,9 +128,10 @@ export default function SkillResourcesPage() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h2 className="font-medium">{r.title}</h2>
+
                 {r.url ? (
                   <a
-                    className="mt-1 block text-sm text-blue-600 hover:underline break-all"
+                    className="mt-1 block break-all text-sm text-blue-600 hover:underline"
                     href={r.url}
                     target="_blank"
                     rel="noreferrer"
@@ -123,7 +139,10 @@ export default function SkillResourcesPage() {
                     {r.url}
                   </a>
                 ) : null}
-                <p className="mt-2 text-xs text-neutral-600">{r.kind}</p>
+
+                <p className="mt-2 text-xs text-neutral-600">
+                  {r.type} • {r.status}
+                </p>
               </div>
 
               <button

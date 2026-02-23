@@ -6,3 +6,8 @@ export const skillCreateSchema = z.object({
   level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]).optional(),
   progress: z.number().int().min(0).max(100).optional(),
 });
+
+// All fields optional for partial updates (edit form + archive/restore)
+export const skillUpdateSchema = skillCreateSchema.partial().extend({
+  isArchived: z.boolean().optional(),
+});

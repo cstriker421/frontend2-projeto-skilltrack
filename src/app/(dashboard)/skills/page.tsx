@@ -15,48 +15,57 @@ export default function SkillsPage() {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-fade-up">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Skills</h1>
-          <p className="text-sm text-neutral-600">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-zinc-50">Skills</h1>
+          <p className="text-sm text-gray-500 dark:text-zinc-400">
             {showArchived ? "Archived skills" : "Active skills"}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2">
+          {/* Active / Archived toggle */}
+          <div className="flex items-center rounded-lg border border-gray-200 dark:border-zinc-700 p-1 gap-1">
             <button
-              className={`rounded-md border px-3 py-2 text-sm ${
-                !showArchived ? "bg-neutral-100 font-medium" : ""
-              }`}
+              className={`rounded-md px-3 py-1.5 text-sm transition-colors duration-150
+                ${!showArchived
+                  ? "bg-gray-900 dark:bg-indigo-600 text-white"
+                  : "text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800"
+                }`}
               onClick={() => setShowArchived(false)}
             >
               Active
             </button>
             <button
-              className={`rounded-md border px-3 py-2 text-sm ${
-                showArchived ? "bg-neutral-100 font-medium" : ""
-              }`}
+              className={`rounded-md px-3 py-1.5 text-sm transition-colors duration-150
+                ${showArchived
+                  ? "bg-gray-900 dark:bg-indigo-600 text-white"
+                  : "text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800"
+                }`}
               onClick={() => setShowArchived(true)}
             >
               Archived
             </button>
           </div>
 
-          {!showArchived ? (
-            <Link className="rounded-md border px-3 py-2 text-sm" href="/skills/new">
+          {!showArchived && (
+            <Link
+              className="rounded-md bg-gray-900 dark:bg-indigo-600 px-3 py-2 text-sm text-white
+                hover:bg-gray-700 dark:hover:bg-indigo-500 transition-colors duration-150"
+              href="/skills/new"
+            >
               New skill
             </Link>
-          ) : null}
+          )}
         </div>
       </div>
 
-      {isLoading && <p>Loading…</p>}
-      {isError && <p className="text-red-600">Failed to load skills.</p>}
+      {isLoading && <p className="text-gray-500 dark:text-zinc-400">Loading…</p>}
+      {isError && <p className="text-red-600 dark:text-red-400">Failed to load skills.</p>}
 
       {!isLoading && data?.length === 0 && (
-        <p className="text-neutral-600">
+        <p className="text-gray-500 dark:text-zinc-400">
           {showArchived ? "No archived skills yet." : "No skills yet. Create your first one."}
         </p>
       )}
