@@ -4,6 +4,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+const fieldCls =
+  "w-full rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 " +
+  "p-2 text-gray-900 dark:text-zinc-50 placeholder:text-gray-400 dark:placeholder:text-zinc-500 " +
+  "focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors";
+
+const selectCls =
+  "rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 " +
+  "p-2 text-gray-900 dark:text-zinc-50 focus:outline-none focus:ring-2 " +
+  "focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors";
+
 export default function NewSkillPage() {
   const router = useRouter();
   const qc = useQueryClient();
@@ -30,18 +40,18 @@ export default function NewSkillPage() {
   });
 
   return (
-    <div className="mx-auto max-w-lg space-y-4">
-      <h1 className="text-2xl font-semibold">Create skill</h1>
+    <div className="mx-auto max-w-lg space-y-4 animate-fade-up">
+      <div>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-zinc-50">Create skill</h1>
+        <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">Add a new skill to track.</p>
+      </div>
 
       <form
         className="space-y-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          mutation.mutate();
-        }}
+        onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }}
       >
         <input
-          className="w-full rounded-md border p-2"
+          className={fieldCls}
           placeholder="Skill title (e.g., TypeScript)"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -49,7 +59,7 @@ export default function NewSkillPage() {
         />
 
         <textarea
-          className="w-full rounded-md border p-2"
+          className={fieldCls}
           placeholder="Description (optional)"
           rows={4}
           value={description}
@@ -58,31 +68,36 @@ export default function NewSkillPage() {
 
         <div className="flex gap-2">
           <select
-            className="rounded-md border p-2"
+            className={selectCls}
             value={level}
-            onChange={(e) => setLevel(e.target.value as any)}
+            onChange={(e) => setLevel(e.target.value as typeof level)}
           >
             <option value="BEGINNER">Beginner</option>
             <option value="INTERMEDIATE">Intermediate</option>
             <option value="ADVANCED">Advanced</option>
           </select>
 
-          <input
-            className="flex-1 rounded-md border p-2"
-            type="number"
-            min={0}
-            max={100}
-            value={progress}
-            onChange={(e) => setProgress(Number(e.target.value))}
-          />
+          <div className="flex-1 flex items-center gap-2">
+            <input
+              className={fieldCls}
+              type="range"
+              min={0}
+              max={100}
+              value={progress}
+              onChange={(e) => setProgress(Number(e.target.value))}
+            />
+            <span className="text-sm font-medium text-gray-700 dark:text-zinc-300 w-10 text-right shrink-0">
+              {progress}%
+            </span>
+          </div>
         </div>
 
-        {mutation.isError ? (
-          <p className="text-sm text-red-600">Failed to create skill.</p>
-        ) : null}
+        {mutation.isError && (
+          <p className="text-sm text-red-600 dark:text-red-400">Failed to create skill.</p>
+        )}
 
         <button
-          className="rounded-md bg-black px-4 py-2 text-white disabled:opacity-50"
+          className="rounded-md px-4 py-2 text-sm btn-primary"
           disabled={mutation.isPending}
         >
           {mutation.isPending ? "Saving…" : "Create"}

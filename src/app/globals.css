@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* 
- * Wire up the dark: variant to data-theme attribute,
+/*
+ * Wire up the dark: variant to our data-theme attribute,
  * so ThemeContext can control it programmatically.
  */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
@@ -11,31 +11,81 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Progress bar fill animation */
+/* ─── Page entrance ─────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up       { animation: fade-up 0.35s ease both; }
+.animate-fade-up-delay { animation: fade-up 0.35s 0.1s ease both; }
+
+/* ─── Progress bars ─────────────────────────────────────────── */
 @keyframes grow-x {
   from { width: 0%; }
 }
-
 .progress-bar-fill {
   animation: grow-x 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-/* Page fade-in */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Gold shimmer for 100% bars */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.bar-complete {
+  background: linear-gradient(
+    90deg,
+    #f97316 0%,
+    #fbbf24 30%,
+    #fde68a 50%,
+    #fbbf24 70%,
+    #f97316 100%
+  );
+  background-size: 200% auto;
+  animation:
+    grow-x 0.8s cubic-bezier(0.4, 0, 0.2, 1) both,
+    shimmer 2.5s 0.8s linear infinite;
 }
 
-.animate-fade-up {
-  animation: fade-up 0.35s ease both;
+/* ─── Celebration banner (Overall 100%) ─────────────────────── */
+@keyframes celebrate-in {
+  0%   { opacity: 0; transform: scale(0.85) translateY(6px); }
+  60%  { transform: scale(1.03) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.celebrate-banner {
+  animation: celebrate-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-.animate-fade-up-delay {
-  animation: fade-up 0.35s 0.1s ease both;
+/* Slow pulse for the trophy icon */
+@keyframes trophy-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.15); }
+}
+.trophy-pulse {
+  display: inline-block;
+  animation: trophy-pulse 1.8s ease-in-out infinite;
+}
+
+/* ─── Gradient primary button ────────────────────────────────── */
+/*
+ * Usage: add class="btn-primary" alongside padding/rounding classes.
+ * The gradient slides rightward on hover.
+ */
+.btn-primary {
+  background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
+  background-size: 200% auto;
+  color: #fff;
+  transition:
+    background-position 0.4s ease,
+    box-shadow 0.3s ease,
+    opacity 0.2s ease;
+}
+.btn-primary:hover:not(:disabled) {
+  background-position: right center;
+  box-shadow: 0 4px 18px rgba(234, 88, 12, 0.45);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

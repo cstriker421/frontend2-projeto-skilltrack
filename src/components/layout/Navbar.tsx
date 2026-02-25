@@ -12,9 +12,11 @@ function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className={`rounded-md px-3 py-2 text-sm transition-colors duration-150
-        hover:bg-gray-100 dark:hover:bg-zinc-800
-        ${active ? "bg-gray-100 dark:bg-zinc-800 font-medium" : ""}
+      className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150
+        ${active
+          ? "bg-orange-500 text-white"
+          : "text-gray-600 dark:text-zinc-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-orange-600 dark:hover:text-orange-400"
+        }
       `}
     >
       {label}
@@ -48,8 +50,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
-        <Link href="/" className="font-semibold text-gray-900 dark:text-zinc-50">
-          SkillTrack
+        <Link href="/" className="font-bold text-gray-900 dark:text-zinc-50 tracking-tight">
+          Skill<span className="text-orange-500">Track</span>
         </Link>
 
         <nav className="flex items-center gap-1">
@@ -58,12 +60,14 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Theme toggle */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="rounded-md border border-gray-200 dark:border-zinc-700 p-2 text-gray-600 dark:text-zinc-400
-              hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-150"
+            className="rounded-md border border-gray-200 dark:border-zinc-700 p-2
+              text-gray-600 dark:text-zinc-400
+              hover:border-orange-300 dark:hover:border-orange-700
+              hover:text-orange-500 dark:hover:text-orange-400
+              transition-colors duration-150"
           >
             {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
@@ -77,8 +81,10 @@ export default function Navbar() {
               </span>
               <button
                 className="rounded-md border border-gray-200 dark:border-zinc-700 px-3 py-2 text-sm
-                  hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-150
-                  text-gray-900 dark:text-zinc-50"
+                  text-gray-900 dark:text-zinc-50
+                  hover:border-orange-300 dark:hover:border-orange-700
+                  hover:text-orange-600 dark:hover:text-orange-400
+                  transition-colors duration-150"
                 onClick={() => signOut({ callbackUrl: "/" })}
               >
                 Logout
@@ -86,9 +92,7 @@ export default function Navbar() {
             </>
           ) : (
             <Link
-              className="rounded-md border border-gray-200 dark:border-zinc-700 px-3 py-2 text-sm
-                hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-150
-                text-gray-900 dark:text-zinc-50"
+              className="rounded-md px-3 py-2 text-sm btn-primary"
               href="/login"
             >
               Login
