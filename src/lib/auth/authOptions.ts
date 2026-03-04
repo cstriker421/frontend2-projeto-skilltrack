@@ -20,6 +20,7 @@ export const authOptions: NextAuthOptions = {
           create: {
             email,
             username: email.split("@")[0],
+            avatar: "🔥",
           },
         });
 
@@ -27,18 +28,28 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email ?? undefined,
           name: user.name ?? user.username ?? undefined,
+          avatar: user.avatar ?? "🔥",
         };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user?.id) token.sub = user.id;
+    async jwt({ token, user, trigger, session }) {
+      // On sign-in, seed token from user object
+      if (user) {
+        token.sub = user.id;
+        token.avatar = (user as any).avatar ?? "🔥";
+      }
+      // On session update (called from useSession().update()), sync avatar
+      if (trigger === "update" && session?.avatar) {
+        token.avatar = session.avatar;
+      }
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token.sub) {
+      if (session.user) {
         (session.user as any).id = token.sub;
+        (session.user as any).avatar = token.avatar ?? "🔥";
       }
       return session;
     },

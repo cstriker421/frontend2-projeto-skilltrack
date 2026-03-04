@@ -5,6 +5,7 @@ export type Skill = {
   level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
   progress: number;
   isArchived: boolean;
+  updatedAt: string; // ISO date string used for recency sorting
 };
 
 export async function fetchSkills(archived: boolean): Promise<Skill[]> {
@@ -47,7 +48,7 @@ export async function fetchSkill(skillId: string): Promise<Skill> {
   return res.json();
 }
 
-// NOTE: this is a soft-delete (archive)
+// NOTE: soft-delete (archive)
 export async function deleteSkill(skillId: string): Promise<void> {
   const res = await fetch(`/api/skills/${skillId}`, { method: "DELETE" });
   if (!res.ok) throw new Error("Failed to archive skill");

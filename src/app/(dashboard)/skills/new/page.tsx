@@ -52,7 +52,7 @@ export default function NewSkillPage() {
       >
         <input
           className={fieldCls}
-          placeholder="Skill title (e.g., TypeScript)"
+          placeholder="Skill title (e.g., TypeScript, Cooking, Guitar)"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
@@ -60,7 +60,7 @@ export default function NewSkillPage() {
 
         <textarea
           className={fieldCls}
-          placeholder="Description (optional)"
+          placeholder="Description (obligatory)"
           rows={4}
           value={description}
           onChange={(e) => setDescription(e.target.value)}

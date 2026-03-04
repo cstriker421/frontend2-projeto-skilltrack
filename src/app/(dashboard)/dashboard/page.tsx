@@ -8,7 +8,6 @@ import type { Skill } from "@/lib/api/skills";
 
 const LEVEL_ORDER: Skill["level"][] = ["BEGINNER", "INTERMEDIATE", "ADVANCED"];
 
-// Distinct from orange primary: emerald → sky → violet
 const LEVEL_COLORS: Record<Skill["level"], string> = {
   BEGINNER:     "bg-emerald-500 dark:bg-emerald-400",
   INTERMEDIATE: "bg-sky-500 dark:bg-sky-400",
@@ -22,9 +21,9 @@ const LEVEL_LABELS: Record<Skill["level"], string> = {
 };
 
 const LEVEL_COMPLETE_MSG: Record<Skill["level"], string> = {
-  BEGINNER:     "All beginner skills mastered!",
-  INTERMEDIATE: "Intermediate level conquered!",
-  ADVANCED:     "Advanced mastery achieved!",
+  BEGINNER:     "The first phase of your journey is complete! All beginner skills mastered!",
+  INTERMEDIATE: "You're on a roll! Intermediate level conquered!",
+  ADVANCED:     "Pat yourself on the back, because you achieved advanced mastery!",
 };
 
 export default function DashboardPage() {

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <path fill="#FF6A00" d="
+    M256 40
+    C220 120 160 150 150 230
+    C140 310 200 360 256 440
+    C310 360 370 310 360 230
+    C350 170 300 150 290 210
+    C290 150 310 120 256 40 Z
+  "/>
+</svg>
