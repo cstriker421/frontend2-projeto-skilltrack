@@ -50,7 +50,7 @@ export default function SkillCard({
 
   return (
     <li className="rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900
-      p-4 flex flex-col gap-3 transition-all duration-200
+      p-5 flex flex-col gap-3 transition-all duration-200
       hover:-translate-y-0.5 hover:shadow-md hover:border-orange-200
       dark:hover:shadow-zinc-800/50 dark:hover:border-orange-900/50">
 
