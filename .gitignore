@@ -10,6 +10,12 @@
 !.yarn/releases
 !.yarn/versions
 
+# dev.db
+/dev.db
+/dev.db-journal
+/dev.db-shm
+/dev.db-wal
+
 # testing
 /coverage
 
