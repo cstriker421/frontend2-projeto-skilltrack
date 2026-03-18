@@ -6,17 +6,8 @@ import { fetchSkills } from "@/lib/api/skills";
 import type { Skill } from "@/lib/api/skills";
 import SkillCard from "@/components/skills/SkillCard";
 import { useState, useMemo } from "react";
-
-// Sort types
-type SortKey =
-  | "category-asc"   // Beginner → Intermediate → Advanced (default)
-  | "category-desc"  // Advanced → Intermediate → Beginner
-  | "progress-desc"  // Highest % first
-  | "progress-asc"   // Lowest % first
-  | "recent"         // Most recently updated
-  | "oldest"         // Oldest first
-  | "name-asc"       // A → Z
-  | "name-desc";     // Z → A
+import { sortSkills } from "@/lib/utils/sortSkills";
+import type { SortKey } from "@/lib/utils/sortSkills";
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "category-asc",  label: "Category (Beginner first)" },
@@ -28,74 +19,6 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "name-asc",      label: "Name (A → Z)" },
   { value: "name-desc",     label: "Name (Z → A)" },
 ];
-
-const LEVEL_RANK: Record<Skill["level"], number> = {
-  BEGINNER: 0,
-  INTERMEDIATE: 1,
-  ADVANCED: 2,
-};
-
-function sortSkills(skills: Skill[], key: SortKey): Skill[] {
-  const copy = [...skills];
-
-  // Stable secondary/tertiary sorts applied in reverse priority order
-  // so the primary comparator wins when values are equal.
-
-  const byRecent  = (a: Skill, b: Skill) =>
-    new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-
-  const byCategory = (a: Skill, b: Skill) =>
-    LEVEL_RANK[a.level] - LEVEL_RANK[b.level];
-
-  const byCategoryDesc = (a: Skill, b: Skill) =>
-    LEVEL_RANK[b.level] - LEVEL_RANK[a.level];
-
-  const byProgressDesc = (a: Skill, b: Skill) => b.progress - a.progress;
-  const byProgressAsc  = (a: Skill, b: Skill) => a.progress - b.progress;
-
-  switch (key) {
-    case "category-asc":
-      // Primary: level asc → secondary: progress desc → tertiary: most recent
-      return copy.sort((a, b) =>
-        byCategory(a, b) || byProgressDesc(a, b) || byRecent(a, b)
-      );
-
-    case "category-desc":
-      return copy.sort((a, b) =>
-        byCategoryDesc(a, b) || byProgressDesc(a, b) || byRecent(a, b)
-      );
-
-    case "progress-desc":
-      // Primary: progress desc → secondary: category asc → tertiary: most recent
-      return copy.sort((a, b) =>
-        byProgressDesc(a, b) || byCategory(a, b) || byRecent(a, b)
-      );
-
-    case "progress-asc":
-      return copy.sort((a, b) =>
-        byProgressAsc(a, b) || byCategory(a, b) || byRecent(a, b)
-      );
-
-    case "recent":
-      return copy.sort(byRecent);
-
-    case "oldest":
-      return copy.sort((a, b) => -byRecent(a, b));
-
-    case "name-asc":
-      return copy.sort((a, b) =>
-        a.title.localeCompare(b.title) || byRecent(a, b)
-      );
-
-    case "name-desc":
-      return copy.sort((a, b) =>
-        b.title.localeCompare(a.title) || byRecent(a, b)
-      );
-
-    default:
-      return copy;
-  }
-}
 
 // Component
 export default function SkillsPage() {
