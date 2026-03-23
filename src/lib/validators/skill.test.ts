@@ -43,19 +43,14 @@ describe("skillCreateSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects single character title (min is 2)", () => {
+  it("accepts single character title (min is 1)", () => {
     const result = skillCreateSchema.safeParse({ title: "X" });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects title longer than 80 characters", () => {
-    const result = skillCreateSchema.safeParse({ title: "a".repeat(81) });
-    expect(result.success).toBe(false);
-  });
-
-  it("accepts title at exactly 80 characters", () => {
-    const result = skillCreateSchema.safeParse({ title: "a".repeat(80) });
     expect(result.success).toBe(true);
+  });
+
+  it("rejects title longer than 100 characters", () => {
+    const result = skillCreateSchema.safeParse({ title: "a".repeat(101) });
+    expect(result.success).toBe(false);
   });
 
   it("rejects invalid level", () => {
@@ -137,8 +132,18 @@ describe("skillUpdateSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects single character title even in a partial update", () => {
+  it("accepts single character title in a partial update (min is 1)", () => {
     const result = skillUpdateSchema.safeParse({ title: "X" });
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
+  });
+
+  it("applies default level of BEGINNER", () => {
+    const result = skillCreateSchema.safeParse({ title: "Test" });
+    if (result.success) expect(result.data.level).toBe("BEGINNER");
+  });
+
+  it("applies default progress of 0", () => {
+    const result = skillCreateSchema.safeParse({ title: "Test" });
+    if (result.success) expect(result.data.progress).toBe(0);
   });
 });

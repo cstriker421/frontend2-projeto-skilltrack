@@ -1,14 +1,15 @@
 import { describe, it, expect } from "vitest";
 import { sortSkills } from "@/lib/utils/sortSkills";
-import type { SortableSkill } from "@/lib/utils/sortSkills";
+import type { Skill } from "@/lib/api/skills";
 
 // ─── Fixtures ────────────────────────────────────────────────
-const skills: SortableSkill[] = [
+const skills: Skill[] = [
   {
     id: "1",
     title: "TypeScript",
     level: "BEGINNER",
     progress: 100,
+    isArchived: false,
     updatedAt: "2025-01-03T10:00:00Z",
   },
   {
@@ -16,6 +17,7 @@ const skills: SortableSkill[] = [
     title: "React",
     level: "INTERMEDIATE",
     progress: 60,
+    isArchived: false,
     updatedAt: "2025-01-01T10:00:00Z",
   },
   {
@@ -23,6 +25,7 @@ const skills: SortableSkill[] = [
     title: "Algorithms",
     level: "ADVANCED",
     progress: 30,
+    isArchived: false,
     updatedAt: "2025-01-04T10:00:00Z",
   },
   {
@@ -30,6 +33,7 @@ const skills: SortableSkill[] = [
     title: "CSS",
     level: "BEGINNER",
     progress: 80,
+    isArchived: false,
     updatedAt: "2025-01-02T10:00:00Z",
   },
   {
@@ -37,6 +41,7 @@ const skills: SortableSkill[] = [
     title: "Node.js",
     level: "INTERMEDIATE",
     progress: 60,
+    isArchived: false,
     updatedAt: "2025-01-05T10:00:00Z",
   },
 ];

@@ -1,10 +1,7 @@
-export type SortableSkill = {
-  id: string;
-  title: string;
-  level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
-  progress: number;
-  updatedAt: string;
-};
+import type { Skill } from "@/lib/api/skills";
+
+// Re-export Skill as SortableSkill so the page only needs one import
+export type { Skill as SortableSkill };
 
 export type SortKey =
   | "category-asc"
@@ -16,28 +13,28 @@ export type SortKey =
   | "name-asc"
   | "name-desc";
 
-export const LEVEL_RANK: Record<SortableSkill["level"], number> = {
+export const LEVEL_RANK: Record<Skill["level"], number> = {
   BEGINNER: 0,
   INTERMEDIATE: 1,
   ADVANCED: 2,
 };
 
-export function sortSkills(skills: SortableSkill[], key: SortKey): SortableSkill[] {
+export function sortSkills(skills: Skill[], key: SortKey): Skill[] {
   const copy = [...skills];
 
-  const byRecent = (a: SortableSkill, b: SortableSkill) =>
+  const byRecent = (a: Skill, b: Skill) =>
     new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
 
-  const byCategory = (a: SortableSkill, b: SortableSkill) =>
+  const byCategory = (a: Skill, b: Skill) =>
     LEVEL_RANK[a.level] - LEVEL_RANK[b.level];
 
-  const byCategoryDesc = (a: SortableSkill, b: SortableSkill) =>
+  const byCategoryDesc = (a: Skill, b: Skill) =>
     LEVEL_RANK[b.level] - LEVEL_RANK[a.level];
 
-  const byProgressDesc = (a: SortableSkill, b: SortableSkill) =>
+  const byProgressDesc = (a: Skill, b: Skill) =>
     b.progress - a.progress;
 
-  const byProgressAsc = (a: SortableSkill, b: SortableSkill) =>
+  const byProgressAsc = (a: Skill, b: Skill) =>
     a.progress - b.progress;
 
   switch (key) {
