@@ -4,6 +4,8 @@ A personal learning and certification tracker. Track skills you're learning, att
 
 > Built with Next.js 16, TypeScript, Prisma, NextAuth, React Query, and Tailwind CSS.
 
+🌐 **Live at:** [frontend2-projeto-skilltrack.vercel.app](https://frontend2-projeto-skilltrack.vercel.app)
+
 ---
 
 ## Features
@@ -15,7 +17,8 @@ A personal learning and certification tracker. Track skills you're learning, att
 - **Sorting** — sort skills by category, progress, recency, or name
 - **Avatar picker** — choose a personal icon from a preset set, persisted per user
 - **Light / dark mode** — toggle persisted to `localStorage`, respects OS preference on first load
-- **Authentication** — email-based credential login via NextAuth (demo/passwordless)
+- **Authentication** — email-based credential login via NextAuth (passwordless)
+- **Unit tests** — pure function test coverage via Vitest across sort logic and Zod validators
 
 ---
 
@@ -25,11 +28,13 @@ A personal learning and certification tracker. Track skills you're learning, att
 |---|---|
 | Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
-| Database | SQLite (local) via Prisma ORM |
+| Database | PostgreSQL (Neon) via Prisma ORM |
 | Auth | NextAuth.js v4 (JWT + Credentials) |
 | Data fetching | TanStack React Query v5 |
 | Styling | Tailwind CSS v4 |
 | State | React Context API (theme) |
+| Testing | Vitest |
+| Hosting | Vercel + Neon |
 
 ---
 
@@ -67,13 +72,32 @@ NEXTAUTH_URL="http://localhost:3000"
 
 ---
 
+## Testing
+
+```bash
+# Run all tests
+npm test
+
+# Watch mode
+npm run test:watch
+
+# Coverage report
+npm run test:coverage
+```
+
+Tests cover:
+- `src/lib/utils/sortSkills.ts` — all 8 sort modes including edge cases and stable tiebreakers
+- `src/lib/validators/skill.ts` — skill create and update schema validation
+- `src/lib/validators/resource.ts` — resource create schema validation
+
+---
+
 ## Project Structure
 
 ```
 src/
 ├── app/
 │   ├── (dashboard)/        # Protected routes: dashboard, skills, resources
-│   ├── (public)/           # Public landing page
 │   ├── api/                # API routes (skills, resources, profile, auth)
 │   └── login/              # Login page
 ├── components/
@@ -85,26 +109,21 @@ src/
 │   ├── api/                # Client-side fetch helpers
 │   ├── auth/               # NextAuth config
 │   ├── db/                 # Prisma client
-│   └── validators/         # Zod schemas
+│   ├── utils/              # sortSkills utility
+│   └── validators/         # Zod schemas + colocated tests
 └── types/
 ```
 
 ---
 
-## Deploying to Production
+## Deployment
 
-The easiest path is [Vercel](https://vercel.com) with a hosted Postgres database (e.g. Vercel Postgres or Supabase). Steps:
+Hosted on [Vercel](https://vercel.com) with [Neon](https://neon.tech) as the PostgreSQL provider.
 
-1. Swap the `datasource` block in `prisma/schema.prisma` from `sqlite` to `postgresql`
-2. Update `DATABASE_URL` in your environment to the hosted connection string
-3. Run `npx prisma migrate deploy`
-4. Push to GitHub and import the repo into Vercel
+### Environment Variables (Production)
 
----
-
-## Roadmap
-
-- [ ] Unit tests (Vitest)
-- [ ] Public profile page (`/[username]`)
-- [ ] Resource status progress surfaced on skill cards
-- [ ] Hosted deployment (Vercel + Postgres)
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Neon PostgreSQL connection string |
+| `NEXTAUTH_SECRET` | Random secret for NextAuth JWT signing |
+| `NEXTAUTH_URL` | Full URL of the deployed app |
