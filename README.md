@@ -16,6 +16,7 @@ A personal learning and certification tracker. Track skills you're learning, att
 - **Archive / restore** — soft-delete skills out of your active view without losing data
 - **Sorting** — sort skills by category, progress, recency, or name
 - **Avatar picker** — choose a personal icon from a preset set, persisted per user
+- **Public profile page** — shareable read-only profile at `/{username}` showing all active skills and overall mastery; includes a one-click copy link button
 - **Light / dark mode** — toggle persisted to `localStorage`, respects OS preference on first load
 - **Authentication** — email-based credential login via NextAuth (passwordless)
 - **Unit tests** — pure function test coverage via Vitest across sort logic and Zod validators
@@ -66,6 +67,7 @@ Create a `.env` file in the project root:
 
 ```env
 DATABASE_URL="file:./dev.db"
+DIRECT_URL="file:./dev.db"
 NEXTAUTH_SECRET="your-secret-here"
 NEXTAUTH_URL="http://localhost:3000"
 ```
@@ -98,7 +100,8 @@ Tests cover:
 src/
 ├── app/
 │   ├── (dashboard)/        # Protected routes: dashboard, skills, resources
-│   ├── api/                # API routes (skills, resources, profile, auth)
+│   ├── api/                # API routes (skills, resources, profile, auth, public)
+│   ├── [username]/         # Public profile page
 │   └── login/              # Login page
 ├── components/
 │   ├── layout/             # Navbar, Providers
@@ -124,6 +127,7 @@ Hosted on [Vercel](https://vercel.com) with [Neon](https://neon.tech) as the Pos
 
 | Variable | Description |
 |---|---|
-| `DATABASE_URL` | Neon PostgreSQL connection string |
+| `DATABASE_URL` | Neon PostgreSQL connection string (pooled) |
+| `DIRECT_URL` | Neon PostgreSQL direct connection string (used by Prisma migrations) |
 | `NEXTAUTH_SECRET` | Random secret for NextAuth JWT signing |
 | `NEXTAUTH_URL` | Full URL of the deployed app |

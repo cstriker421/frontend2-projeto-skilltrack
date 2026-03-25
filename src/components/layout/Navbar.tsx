@@ -47,11 +47,13 @@ function MoonIcon() {
 
 function AvatarPicker({
   currentAvatar,
+  username,
   onSelect,
   onClose,
   email,
 }: {
   currentAvatar: string;
+  username?: string;
   onSelect: (a: string) => void;
   onClose: () => void;
   email?: string;
@@ -89,6 +91,20 @@ function AvatarPicker({
         <p className="mb-2 truncate text-xs text-gray-400 dark:text-zinc-500 px-1">
           {email}
         </p>
+      )}
+
+      {username && (
+        <Link
+          href={`/${username}`}
+          onClick={onClose}
+          className="mb-2 flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm
+            text-orange-600 dark:text-orange-400
+            hover:bg-orange-50 dark:hover:bg-orange-950/30
+            transition-colors duration-150"
+        >
+          <span className="text-base">👤</span>
+          View public profile
+        </Link>
       )}
 
       <p className="mb-2 text-xs font-medium text-gray-500 dark:text-zinc-400 px-1">
@@ -136,6 +152,7 @@ export default function Navbar() {
   const [saving, setSaving] = useState(false);
 
   const currentAvatar = (data?.user as any)?.avatar ?? "🔥";
+  const username = (data?.user as any)?.username as string | undefined;
 
   const handleSelectAvatar = useCallback(async (avatar: string) => {
     if (saving || avatar === currentAvatar) return;
@@ -206,6 +223,7 @@ export default function Navbar() {
               {pickerOpen && (
                 <AvatarPicker
                   currentAvatar={currentAvatar}
+                  username={username}
                   onSelect={handleSelectAvatar}
                   onClose={() => setPickerOpen(false)}
                   email={data.user.email ?? undefined}

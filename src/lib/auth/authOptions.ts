@@ -28,6 +28,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email ?? undefined,
           name: user.name ?? user.username ?? undefined,
+          username: user.username ?? undefined,
           avatar: user.avatar ?? "🔥",
         };
       },
@@ -39,6 +40,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.sub = user.id;
         token.avatar = (user as any).avatar ?? "🔥";
+        token.username = (user as any).username;
       }
       // On session update (called from useSession().update()), sync avatar
       if (trigger === "update" && session?.avatar) {
@@ -50,6 +52,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session.user as any).id = token.sub;
         (session.user as any).avatar = token.avatar ?? "🔥";
+        (session.user as any).username = token.username;
       }
       return session;
     },

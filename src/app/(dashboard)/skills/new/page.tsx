@@ -60,7 +60,7 @@ export default function NewSkillPage() {
 
         <textarea
           className={fieldCls}
-          placeholder="Description (obligatory)"
+          placeholder="Description (optional)"
           rows={4}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
