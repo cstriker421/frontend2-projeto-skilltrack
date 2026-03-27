@@ -172,7 +172,7 @@ export default function Navbar() {
         <Link href="/" className="font-bold text-gray-900 dark:text-zinc-50 tracking-tight
           flex items-center gap-1.5">
           <img src="/icon.svg" className="w-5 h-5" alt="" />
-          Skill<span className="text-orange-500">Track</span>
+          Skill<span className="text-orange-600">Track</span>
         </Link>
 
         <nav className="flex items-center gap-1">
