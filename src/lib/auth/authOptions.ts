@@ -1,6 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/db/prisma";
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -9,20 +10,23 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         const email = credentials?.email?.toLowerCase().trim();
-        if (!email) return null;
+        const password = credentials?.password;
 
-        const user = await prisma.user.upsert({
-          where: { email },
-          update: {},
-          create: {
-            email,
-            username: email.split("@")[0],
-            avatar: "🔥",
-          },
-        });
+        if (!email || !password) return null;
+
+        const user = await prisma.user.findUnique({ where: { email } });
+
+        if (!user) return null;
+
+        // If user has no password set yet, rejects and prompts to register
+        if (!user.password) return null;
+
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) return null;
 
         return {
           id: user.id,
@@ -36,13 +40,11 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // On sign-in, seed token from user object
       if (user) {
         token.sub = user.id;
         token.avatar = (user as any).avatar ?? "🔥";
         token.username = (user as any).username;
       }
-      // On session update (called from useSession().update()), sync avatar
       if (trigger === "update" && session?.avatar) {
         token.avatar = session.avatar;
       }
@@ -57,5 +59,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  pages: { signIn: "/login" },
+  pages: {
+    signIn: "/login",
+  },
 };

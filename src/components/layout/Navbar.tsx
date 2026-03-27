@@ -11,7 +11,6 @@ const AVATARS = ["🔥","🚀","⚡","🎯","📚","🧠","💡","🌱","🏆","
 function NavLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
   const active = pathname === href;
-
   return (
     <Link
       href={href}
@@ -60,7 +59,6 @@ function AvatarPicker({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  // Closes on click outside
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) onClose();
@@ -69,7 +67,6 @@ function AvatarPicker({
     return () => document.removeEventListener("mousedown", handler);
   }, [onClose]);
 
-  // Closes on Escape
   useEffect(() => {
     function handler(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
@@ -86,9 +83,8 @@ function AvatarPicker({
         bg-white dark:bg-zinc-900 shadow-lg dark:shadow-zinc-900/60
         animate-fade-up p-3"
     >
-      {/* Email label */}
       {email && (
-        <p className="mb-2 truncate text-xs text-gray-400 dark:text-zinc-500 px-1">
+        <p className="mb-1 truncate text-xs text-gray-400 dark:text-zinc-500 px-1">
           {email}
         </p>
       )}
@@ -111,7 +107,6 @@ function AvatarPicker({
         Choose your icon
       </p>
 
-      {/* Icon grid */}
       <div className="grid grid-cols-7 gap-1">
         {AVATARS.map((a) => (
           <button
@@ -163,7 +158,6 @@ export default function Navbar() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ avatar }),
       });
-      // Updates the session so the new avatar reflects immediately without reload
       await update({ avatar });
     } finally {
       setSaving(false);
@@ -171,24 +165,26 @@ export default function Navbar() {
   }, [saving, currentAvatar, update]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-zinc-800
+      bg-white/80 dark:bg-zinc-950/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
 
-        {/* Logo */}
-        <Link href="/" className="font-bold text-gray-900 dark:text-zinc-50 tracking-tight flex items-center gap-1.5">
+        <Link href="/" className="font-bold text-gray-900 dark:text-zinc-50 tracking-tight
+          flex items-center gap-1.5">
           <img src="/icon.svg" className="w-5 h-5" alt="" />
           Skill<span className="text-orange-500">Track</span>
         </Link>
 
-        {/* Nav links */}
         <nav className="flex items-center gap-1">
-          <NavLink href="/dashboard" label="Dashboard" />
-          <NavLink href="/skills" label="Skills" />
+          {data?.user && (
+            <>
+              <NavLink href="/dashboard" label="Dashboard" />
+              <NavLink href="/skills" label="Skills" />
+            </>
+          )}
         </nav>
 
-        {/* Right side */}
         <div className="flex items-center gap-2">
-          {/* Theme toggle */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
@@ -204,7 +200,6 @@ export default function Navbar() {
           {status === "loading" ? (
             <span className="text-sm text-gray-400 dark:text-zinc-500">…</span>
           ) : data?.user ? (
-            /* Avatar button + picker */
             <div className="relative">
               <button
                 onClick={() => setPickerOpen((o) => !o)}
@@ -231,9 +226,25 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <Link className="rounded-md px-3 py-2 text-sm btn-primary" href="/login">
-              Login
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                className="rounded-md px-3 py-2 text-sm
+                  border border-gray-200 dark:border-zinc-700
+                  text-gray-900 dark:text-zinc-50
+                  hover:border-orange-300 dark:hover:border-orange-700
+                  hover:text-orange-600 dark:hover:text-orange-400
+                  transition-colors duration-150"
+                href="/login"
+              >
+                Sign in
+              </Link>
+              <Link
+                className="rounded-md px-3 py-2 text-sm btn-primary"
+                href="/register"
+              >
+                Register
+              </Link>
+            </div>
           )}
         </div>
 
