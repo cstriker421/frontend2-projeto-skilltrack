@@ -15,6 +15,7 @@ model User {
   email     String?  @unique
   username  String?  @unique
   avatar    String?  @default("🔥")
+  password  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
