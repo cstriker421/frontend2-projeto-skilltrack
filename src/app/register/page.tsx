@@ -20,6 +20,8 @@ export default function RegisterPage() {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

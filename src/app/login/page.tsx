@@ -19,6 +19,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -68,15 +69,27 @@ export default function LoginPage() {
             placeholder="you@example.com"
             autoComplete="email"
           />
-          <input
-            className={fieldCls}
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            autoComplete="current-password"
-          />
+
+          <div className="relative">
+            <input
+              className={fieldCls}
+              type={showPassword ? "text" : "password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2
+                text-gray-400 hover:text-gray-600 dark:hover:text-zinc-300
+                transition-colors text-xs"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
 
           {error && (
             <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
