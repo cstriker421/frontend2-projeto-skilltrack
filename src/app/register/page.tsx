@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -13,31 +12,45 @@ const fieldCls =
   "focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 " +
   "transition-colors";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    if (password !== confirm) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
     setLoading(true);
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
 
+    const data = await res.json();
     setLoading(false);
 
-    if (res?.error) {
-      setError("Invalid email or password.");
-    } else {
-      router.push("/dashboard");
+    if (!res.ok) {
+      setError(data.error ?? "Something went wrong.");
+      return;
     }
+
+    router.push("/login?registered=1");
   }
 
   return (
@@ -47,13 +60,13 @@ export default function LoginPage() {
 
         <div>
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-zinc-50">
-            Sign in
+            Create account
           </h1>
           <p className="mt-2 text-sm text-gray-500 dark:text-zinc-400">
-            Don't have an account?{" "}
-            <Link href="/register"
+            Already have an account?{" "}
+            <Link href="/login"
               className="text-orange-600 dark:text-orange-400 hover:underline">
-              Register
+              Sign in
             </Link>
           </p>
         </div>
@@ -74,8 +87,17 @@ export default function LoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            autoComplete="current-password"
+            placeholder="Password (min. 8 characters)"
+            autoComplete="new-password"
+          />
+          <input
+            className={fieldCls}
+            type="password"
+            required
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            placeholder="Confirm password"
+            autoComplete="new-password"
           />
 
           {error && (
@@ -86,7 +108,7 @@ export default function LoginPage() {
             className="w-full rounded-md px-4 py-2.5 text-sm btn-primary"
             disabled={loading}
           >
-            {loading ? "Signing in…" : "Sign in"}
+            {loading ? "Creating account…" : "Create account"}
           </button>
         </form>
       </div>
