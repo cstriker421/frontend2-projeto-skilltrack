@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://frontend2-projeto-skilltrack.vercel.app/sitemap.xml
