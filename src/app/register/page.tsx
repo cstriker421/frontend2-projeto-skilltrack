@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const fieldCls =
@@ -50,7 +51,17 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/login?registered=1");
+    const signInRes = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (signInRes?.error) {
+      router.push("/login");
+    } else {
+      router.push("/dashboard");
+    }
   }
 
   return (
