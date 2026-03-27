@@ -94,24 +94,48 @@ export default function RegisterPage() {
             placeholder="you@example.com"
             autoComplete="email"
           />
-          <input
+          
+        <div className="relative">
+        <input
             className={fieldCls}
-            type="password"
+            type={showPassword ? "text" : "password"}
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password (min. 8 characters)"
             autoComplete="new-password"
-          />
-          <input
+        />
+        <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2
+            text-gray-400 hover:text-gray-600 dark:hover:text-zinc-300
+            transition-colors text-xs"
+        >
+            {showPassword ? "Hide" : "Show"}
+        </button>
+        </div>
+        
+        <div className="relative">
+        <input
             className={fieldCls}
-            type="password"
+            type={showConfirm ? "text" : "password"}
             required
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             placeholder="Confirm password"
             autoComplete="new-password"
-          />
+        />
+        <button
+            type="button"
+            onClick={() => setShowConfirm((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2
+            text-gray-400 hover:text-gray-600 dark:hover:text-zinc-300
+            transition-colors text-xs"
+        >
+            {showConfirm ? "Hide" : "Show"}
+        </button>
+        </div>
 
           {error && (
             <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
