@@ -16,7 +16,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
       href={href}
       className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150
         ${active
-          ? "bg-orange-600 text-white"
+          ? "bg-orange-700 text-white"
           : "text-gray-600 dark:text-zinc-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-orange-600 dark:hover:text-orange-400"
         }`}
     >
@@ -172,7 +172,7 @@ export default function Navbar() {
         <Link href="/" className="font-bold text-gray-900 dark:text-zinc-50 tracking-tight
           flex items-center gap-1.5">
           <img src="/icon.svg" className="w-5 h-5" alt="" />
-          Skill<span className="text-orange-700">Track</span>
+          Skill<span className="text-orange-700 dark:text-orange-400">Track</span>
         </Link>
 
         <nav className="flex items-center gap-1">
