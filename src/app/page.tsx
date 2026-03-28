@@ -6,7 +6,7 @@ export default function HomePage() {
       <section className="space-y-4 animate-fade-up">
         <h1 className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-zinc-50 flex items-center gap-2">
           <img src="/icon.svg" className="w-8 h-8" alt="" />
-          Skill<span className="text-orange-600">Track</span>
+          Skill<span className="text-orange-700">Track</span>
         </h1>
         <p className="max-w-2xl text-gray-500 dark:text-zinc-400">
           Track the skills you're learning, the resources you use, and your progress over time.

@@ -158,7 +158,7 @@ export default function DashboardPage() {
                   </div>
 
                   {isComplete && (
-                    <p className="mt-1.5 text-xs text-amber-600 dark:text-amber-400 animate-fade-up">
+                    <p className="mt-1.5 text-xs text-amber-700 dark:text-amber-400 animate-fade-up">
                       🎉 {LEVEL_COMPLETE_MSG[level]}
                     </p>
                   )}

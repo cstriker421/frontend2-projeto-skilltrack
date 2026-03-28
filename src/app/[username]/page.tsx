@@ -139,7 +139,7 @@ export default async function ProfilePage({
               style={{ width: `${avgProgress}%` }}
             />
           </div>
-          <p className="mt-2 text-xs text-gray-400 dark:text-zinc-500">
+          <p className="mt-2 text-xs text-gray-500 dark:text-zinc-400">
             {skills.length} active skill{skills.length !== 1 ? "s" : ""}
           </p>
         </div>
@@ -152,7 +152,7 @@ export default async function ProfilePage({
         grouped.map(({ level, skills: levelSkills }) => (
           <div key={level} className="space-y-3">
             <h2 className="text-xs font-semibold uppercase tracking-widest
-              text-gray-400 dark:text-zinc-500">
+              text-gray-500 dark:text-zinc-400">
               {LEVEL_LABELS[level]}
             </h2>
 
